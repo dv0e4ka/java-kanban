@@ -25,22 +25,29 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     @Override
-    public void add(Task task) {
+    public int add(Task task) {
         task.setId(++id);
         getTasks.put(task.getId(), task);
+        return task.getId();
     }
 
     @Override
-    public void add(Subtask subtask) {
+    public int add(Subtask subtask) {
+
+        int epicId = subtask.getEpicId();
+        Epic epic2 = getEpics.get(epicId);
         subtask.setId(++id);
         getSubtasks.put(subtask.getId(), subtask);
+        epic2.addSubtask(subtask.getId());
+        updateEpicStatus(epic2);
+        return subtask.getId();
     }
 
     @Override
-    public void add(Epic epic) {
+    public int add(Epic epic) {
         epic.setId(++id);
-        updateEpicStatus(epic);
         getEpics.put(epic.getId(), epic);
+        return epic.getId();
     }
 
     @Override
@@ -67,52 +74,101 @@ public class InMemoryTaskManager implements TaskManager {
         return new ArrayList<>(getEpics.values());
     }
 
+    @Override
+    public void getById(int id) {
+        if (getTasks.containsKey(id)) {
+            getTaskById(id);
+            return;
+        } else if (getSubtasks.containsKey(id)) {
+            getSubtaskById(id);
+            return;
+        } else if (getEpics.containsKey(id)) {
+            getEpicById(id);
+            return;
+        } else {
+            System.out.println("такого id нет");
+        }
+    }
 
     @Override
     public Task getTaskById(int taskId) {
-        historyManager.addHistory(getTasks.get(taskId));
+        historyManager.add(getTasks.get(taskId));
         return getTasks.get(taskId);
     }
 
     @Override
     public Subtask getSubtaskById(int subtaskId) {
-        historyManager.addHistory(getSubtasks.get(subtaskId));
+        historyManager.add(getSubtasks.get(subtaskId));
         return getSubtasks.get(subtaskId);
     }
 
     @Override
     public Epic getEpicById(int epicId) {
-        historyManager.addHistory(getEpics.get(epicId));
+        historyManager.add(getEpics.get(epicId));
         return getEpics.get(epicId);
     }
 
     @Override
     public void removeById(int id) {
-        if (getTasks.containsKey(id)) removeTask(id);
-        if (getSubtasks.containsKey(id)) removeSubtask(id);
-        if (getEpics.containsKey(id)) removeEpic(id);
+        if (getTasks.containsKey(id)) {
+            removeTask(id);
+            return;
+        } else if (getSubtasks.containsKey(id)) {
+            removeSubtask(id);
+            return;
+        } else if (getEpics.containsKey(id)) {
+            removeEpic(id);
+            return;
+        } else {
+            System.out.println("такого id нет");
+        }
     }
 
     @Override
     public void removeTask(int id) {
-        getTasks.remove(id);
+        if (getTasks.containsKey(id)) {
+            String taskTitle = getTasks.get(id).getTitle();
+            getTasks.remove(id);
+            historyManager.remove(id);
+            System.out.println("Удалена задача: " + taskTitle + "\n");
+        }
     }
 
     @Override
     public void removeSubtask(int id) {
-        getSubtasks.remove(id);
+        if (getSubtasks.containsKey(id)) {
+            String subTitle = getSubtasks.get(id).getTitle();
+            getSubtasks.remove(id);
+            historyManager.remove(id);
+            System.out.println("Удалена подзадача: " + subTitle);
+        }
     }
 
     @Override
     public void removeEpic(int id) {
-        getEpics.remove(id);
+        if (getEpics.containsKey(id)) {
+            List<Integer> subTasksId = getEpics.get(id).getSubIds();
+            for (int subTaskId : subTasksId) {
+                String subName = getSubtasks.get(subTaskId).getTitle();
+               // getSubtasks.remove(subTaskId);
+                removeById(subTaskId);
+               // System.out.println("Удалена подзадача: " + subName);
+            }
+            String epicTitle = getEpics.get(id).getTitle();
+            getEpics.remove(id);
+            historyManager.remove(id);
+            System.out.println("Удалён эпик по id: " + epicTitle + "\n");
+        }
     }
 
     @Override
     public void deleteAllTasks() {
         getTasks.clear();
+        System.out.println("Удалены все задачи\n");
         getSubtasks.clear();
+        System.out.println("Удалены все субзадачи\n");
         getEpics.clear();
+        System.out.println("Удалены все эпики\n");
     }
 
     @Override
@@ -152,7 +208,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Subtask> getSubtaskListFromEpic(int epicId) {
-        List<Integer> subtaskIdList = new ArrayList<>(getEpics.get(epicId).getSubtasks());
+        List<Integer> subtaskIdList = new ArrayList<>(getEpics.get(epicId).getSubIds());
         List<Subtask> subtasksListFromEpic = new ArrayList<>();
         for (int idSub : subtaskIdList) {
             subtaskIdList.add(idSub);

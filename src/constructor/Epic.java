@@ -11,6 +11,7 @@ public class Epic extends Task {
         subtasks = new ArrayList<>();
     }
 
+
     public void addSubtask(int subId) {
         this.subtasks.add(subId);
     }
@@ -19,11 +20,13 @@ public class Epic extends Task {
         return subtasks;
     }
 
-    public List<Integer> getSubtasks() {
-        return subtasks;
-    }
-
-    public void setSubId(List<Integer> subIds) {
-        this.subtasks = subIds;
+    @Override
+    public String toString() {
+        return "Epic{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", Id=" + id +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

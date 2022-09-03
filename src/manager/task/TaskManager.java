@@ -11,13 +11,15 @@ public interface TaskManager {
 
 
 
-    public void add(Task task);
+    public int add(Task task);
 
-    public void add(Subtask subtask);
+    public int add(Subtask subtask);
 
-    public void add(Epic epic);
+    public int add(Epic epic);
 
     public List<List> getAllTasksList();
+
+    public void getById(int id);
 
     public List<Task> getTaskValues();
 
