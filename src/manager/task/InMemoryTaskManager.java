@@ -150,9 +150,7 @@ public class InMemoryTaskManager implements TaskManager {
             List<Integer> subTasksId = getEpics.get(id).getSubIds();
             for (int subTaskId : subTasksId) {
                 String subName = getSubtasks.get(subTaskId).getTitle();
-               // getSubtasks.remove(subTaskId);
                 removeById(subTaskId);
-               // System.out.println("Удалена подзадача: " + subName);
             }
             String epicTitle = getEpics.get(id).getTitle();
             getEpics.remove(id);
