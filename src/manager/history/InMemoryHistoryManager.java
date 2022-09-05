@@ -10,8 +10,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     private final Map<Integer, Node> linkMap = new HashMap<>();
 
-
-
     @Override
     public void add(Task task) {
         if (task == null) return;
