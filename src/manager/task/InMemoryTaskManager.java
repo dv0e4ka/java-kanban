@@ -21,9 +21,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     private final HistoryManager historyManager = Managers.getDefaultHistory();
 
-
-
-
     @Override
     public int add(Task task) {
         task.setId(++id);
@@ -221,7 +218,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Integer> getEpicIds() {
+    public List<Integer> getEpicIds() {
         return new ArrayList<>(getEpics.keySet());
     }
 }
