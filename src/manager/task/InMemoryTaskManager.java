@@ -11,15 +11,23 @@ import manager.history.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    private static int id = 0;
+    private static int id;
 
-    private final Map<Integer, Task> getTasks = new HashMap<>();
+    private final Map<Integer, Task> getTasks;
 
-    private final Map<Integer, Epic> getEpics = new HashMap<>();
+    private final Map<Integer, Epic> getEpics;
 
-    private final Map<Integer, Subtask> getSubtasks = new HashMap<>();
+    private final Map<Integer, Subtask> getSubtasks;
 
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    private final HistoryManager historyManager;
+
+    public InMemoryTaskManager() {
+        id = 0;
+        getTasks = new HashMap<>();
+        getEpics = new HashMap<>();
+        getSubtasks = new HashMap<>();
+        historyManager  = Managers.getDefaultHistory();
+    }
 
     @Override
     public int add(Task task) {
@@ -157,7 +165,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteAllTasks() {
+    public void removeAllTasks() {
         getTasks.clear();
         System.out.println("Удалены все задачи\n");
         getSubtasks.clear();
@@ -213,12 +221,46 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     @Override
+    public List<Integer> getEpicIds() {
+        return new ArrayList<>(getEpics.keySet());
+    }
+
+    @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }
 
-    @Override
-    public List<Integer> getEpicIds() {
-        return new ArrayList<>(getEpics.keySet());
+    public static int getId() {
+        return id;
+    }
+
+    public Map<Integer, Task> getGetTasks() {
+        return getTasks;
+    }
+
+    public Map<Integer, Epic> getGetEpics() {
+        return getEpics;
+    }
+
+    public Map<Integer, Subtask> getGetSubtasks() {
+        return getSubtasks;
+    }
+
+    public HistoryManager getHistoryManager() {
+        return historyManager;
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        for (Map.Entry<Integer, Task> entry : getTasks.entrySet()) {
+            builder.append(entry.getKey().toString());
+            builder.append(entry.getValue().toString() + "\n");
+            builder.append(String.format("", entry.getValue().toString() + "\n"));
+        }
+
+        builder.append("{");
+
+        return null;
     }
 }

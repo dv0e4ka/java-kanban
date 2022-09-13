@@ -2,15 +2,22 @@ import constructor.*;
 import manager.Managers;
 import manager.history.HistoryManager;
 import manager.history.InMemoryHistoryManager;
+import manager.task.FileBackedTasksManager;
 import manager.task.InMemoryTaskManager;
 import manager.task.TaskManager;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class Main {
-
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws IOException {
         TaskManager task = Managers.getDefaultTask();
 
+
+/*
         // Создаём три простых задачи
         Task task1 = new Task("Task1", "description Task1", TaskStatus.NEW);
         int task1Id = task.add(task1);
@@ -49,7 +56,6 @@ public class Main {
         int epic2Id = task.add(epic2);
         System.out.println("Id созданного Epic2 - " + epic2Id);
 
-
         // запрашиваю задачи несколько раз в разном порядке
         task.getById(task1Id);
         task.getById(task2Id);
@@ -60,9 +66,9 @@ public class Main {
         System.out.println(task.getHistory());
         System.out.println();
 
-        task.getById(task1Id);     // [task2, epic1, sub1Epic1, epic2, - task1]
-        task.getById(epic1Id);     // [task2, sub1Epic1, epic2, task1, - epic1]
-        task.getById(sub1Epic1Id); // [task2, epic2, task1, epic1, - sub1Epic1]
+        task.getById(task1Id);
+        task.getById(epic1Id);
+        task.getById(sub1Epic1Id);
         System.out.println("История вызова должна содержать: [task2, epic2, task1, epic1, - sub1Epic1]");
         System.out.println(task.getHistory());
         System.out.println();
@@ -76,5 +82,7 @@ public class Main {
         task.removeById(epic1Id);
         System.out.println("История вызова должна содержать: [epic2, task1]");
         System.out.println(task.getHistory());
+
+ */
     }
 }
