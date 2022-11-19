@@ -20,6 +20,7 @@ import java.util.Map;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
     private Path path;
+    private static final String PATH = "resources/TaskManager.csv";
     private static final String HEAD = "id,type,name,status,description,epic";
 
 
@@ -29,13 +30,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     public FileBackedTasksManager()  {
-        this.path = Paths.get("TaskManager.csv");
+        this.path = Paths.get(PATH);
     }
 
     //автосохранение
     private void save() {
         try{
-            path = Path.of("TaskManager.csv"); //TODO
+            path = Path.of(PATH);
             String head = HEAD + System.lineSeparator();
             StringBuilder data = new StringBuilder(head);
             List<Task> allTasks = this.getAllTasks();
