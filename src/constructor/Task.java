@@ -2,11 +2,8 @@ package constructor;
 
 public class Task {
     protected String title;
-
     protected String description;
-
     protected int id;
-
     protected TaskStatus status;
 
     public Task(String title, String description, TaskStatus status) {
@@ -41,11 +38,9 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
-                "title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", Id=" + id +
-                ", status='" + status + '\'' +
-                '}';
+        return id + "," + "TASK"
+                + "," + title
+                + "," + getStatus()
+                + "," + getDescription() + ",";
     }
 }

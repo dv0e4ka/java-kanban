@@ -8,21 +8,15 @@ import java.util.List;
 import java.util.Map;
 
 public interface TaskManager {
+    List<Task> getHistory();
+
     int add(Task task);
 
     int add(Subtask subtask);
 
     int add(Epic epic);
 
-    List<List> getAllTasksList();
-
     void getById(int id);
-
-    List<Task> getTaskValues();
-
-    List<Subtask> getSubtaskValues();
-
-    List<Epic> getEpicValues();
 
     Task getTaskById(int id);
 
@@ -30,13 +24,23 @@ public interface TaskManager {
 
     Epic getEpicById(int id);
 
-    void removeById(int id);
+    List<Integer> getEpicIds();
 
-    void removeTask(int id);
+    List<Task> getTaskValues();
 
-    void removeSubtask(int id);
+    List<Subtask> getSubtaskValues();
 
-    void removeEpic(int id);
+    List<Subtask> getSubtaskListFromEpic(int id);
+
+    List<Epic> getEpicValues();
+
+    void deleteById(int id);
+
+    void deleteTask(int id);
+
+    void deleteSubtask(int id);
+
+    void deleteEpic(int id);
 
     void deleteAllTasks();
 
@@ -46,9 +50,5 @@ public interface TaskManager {
 
     void update(Epic epic);
 
-    List<Subtask> getSubtaskListFromEpic(int id);
-
-    List<Task> getHistory();
-
-    List<Integer> getEpicIds();
+    public List<Task> getAllTasks();
 }

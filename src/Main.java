@@ -5,6 +5,9 @@ import manager.history.InMemoryHistoryManager;
 import manager.task.InMemoryTaskManager;
 import manager.task.TaskManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -68,13 +71,18 @@ public class Main {
         System.out.println();
 
 
-        task.removeById(task2Id);
+        task.deleteById(task2Id);
         System.out.println("История вызова должна содержать: [epic2, task1, epic1, - sub1Epic1]");
         System.out.println(task.getHistory());
         System.out.println();
 
-        task.removeById(epic1Id);
+        task.deleteById(epic1Id);
         System.out.println("История вызова должна содержать: [epic2, task1]");
+        System.out.println(task.getHistory());
+
+        task.deleteById(epic2Id);
+        task.deleteById(task1Id);
+        System.out.println("all have been deleted");
         System.out.println(task.getHistory());
     }
 }

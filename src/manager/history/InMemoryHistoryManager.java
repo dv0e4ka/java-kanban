@@ -3,25 +3,22 @@ package manager.history;
 import java.util.*;
 import constructor.Task;
 
-
 public class InMemoryHistoryManager implements HistoryManager {
-
     private final CustomLinkedList<Task> history = new CustomLinkedList<>();
-
     private final Map<Integer, Node> linkMap = new HashMap<>();
 
     @Override
     public void add(Task task) {
         if (task == null) return;
-        remove(task.getId());
+        delete(task.getId());
         history.linkLast(task);
         linkMap.put(task.getId(), history.tail.prev);
     }
 
     @Override
-    public void remove(int id) {
+    public void delete(int id) {
         if (linkMap.containsKey(id)) {
-            history.removeNode(linkMap.get(id));
+            history.deleteNode(linkMap.get(id));
             linkMap.remove(id);
         }
     }
@@ -32,11 +29,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public class CustomLinkedList<Task> {
-
         private Node<Task> tail;
-
         private Node<Task> head;
-
 
         private void linkLast(Task task) {
             if (head == null) {
@@ -50,20 +44,9 @@ public class InMemoryHistoryManager implements HistoryManager {
                 tail = new Node<>(currNode, null, null);
                 currNode.prev.next = currNode;
                 currNode.next = tail;
-
         }
 
-        public List<Task> getTasks() {
-            final List<Task> tasksList = new ArrayList<>();
-            Node<Task> currNode = head;
-            while (currNode != null) {
-                tasksList.add(currNode.data);
-                currNode = currNode.next;
-            }
-            return tasksList;
-        }
-
-        public void removeNode(Node node) {
+        public void deleteNode(Node node) {
             if (node == null) return;
 
 
@@ -78,6 +61,16 @@ public class InMemoryHistoryManager implements HistoryManager {
                    node.next.prev = node.prev;
                }
             }
+        }
+
+        public List<Task> getTasks() {
+            final List<Task> tasksList = new ArrayList<>();
+            Node<Task> currNode = head;
+            while (currNode != null) {
+                tasksList.add(currNode.data);
+                currNode = currNode.next;
+            }
+            return tasksList;
         }
     }
 
