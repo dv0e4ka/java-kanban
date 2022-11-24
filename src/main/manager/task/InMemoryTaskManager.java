@@ -42,8 +42,7 @@ public class InMemoryTaskManager implements TaskManager {
                 newEndTime = subtask.getEndTime();
             }
         }
-        System.out.println(epic.getTitle() + " расчётное число старта: " + newStartTime);
-        System.out.println(epic.getTitle() + " расчётное число завершения: " + newEndTime);
+
         Duration epicDuration = Duration.between(newStartTime, newEndTime);
 
         epic.setStartTime(newStartTime);
