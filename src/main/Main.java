@@ -17,7 +17,7 @@ public class Main {
 
         Subtask Subtask1 = new Subtask("Subtask1", "Description Subtask1",
                 TaskStatus.NEW, epic1.getId());
-        Subtask1.setStartTime("01.01.21,00:00");
+        Subtask1.setStartTime("01.01.21/00:00");
         Subtask1.setDuration(Duration.ofDays(900));
         manager.add(Subtask1);
 

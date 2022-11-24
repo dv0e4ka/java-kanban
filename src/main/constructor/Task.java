@@ -15,7 +15,7 @@ public class Task {
     protected LocalDateTime startTime;
     protected Duration duration;
     protected LocalDateTime endTime;
-    final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy,mm:HH");
+    final static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy/mm:HH");
     public Task(String title, String description, TaskStatus status) {
         this.title = title;
         this.description = description;
