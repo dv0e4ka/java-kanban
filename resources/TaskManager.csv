@@ -1,8 +1,5 @@
 id,type,name,status,description,epic
-1,TASK,Task1,NEW,Description task1,
-2,TASK,Task2,NEW,Description task2,
-3,EPIC,Epic1,NEW,Description epic1,
-4,SUBTASK,Subtask1,NEW,Description Subtask1,3
-6,TASK,Task3,NEW,Description task3,
+1,EPIC,EpicForSubtask,NEW,Description EpicForSubtask,start: 01.01.00,00:00,duration: 10min
+2,SUBTASK,subtask,NEW,Description subtask,1,start: 01.02.22,00:00,duration: 10min
 
-3,1,
+1,

@@ -1,18 +1,17 @@
-package manager.task;
+package main.manager.task;
 
-import constructor.*;
-import manager.exceptions.ManagerSaveException;
-import manager.history.HistoryManager;
-import manager.history.InMemoryHistoryManager;
+import main.constructor.*;
+import main.manager.exceptions.ManagerSaveException;
+import main.manager.history.HistoryManager;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,18 +73,27 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         String title = parts[2];
         TaskStatus status = TaskStatus.valueOf(parts[3]);
         String description = parts[4];
+        String startTime = parts[5];
+        Duration duration = Duration.ofMinutes(Integer.parseInt(parts[6]));
 
         Task task = null;
         switch (TaskType.valueOf(type)) {
-            case TASK :
+            case TASK -> {
                 task = new Task(title, description, status);
-                break;
-            case SUBTASK :
-                int epicId = Integer.parseInt(parts[5]);
+                task.setStartTime(startTime);
+                task.setDuration(duration);
+            }
+            case SUBTASK -> {
+                int epicId = Integer.parseInt(parts[7]);
                 task = new Subtask(title, description, status, epicId);
-                break;
-            case EPIC :
+                task.setStartTime(startTime);
+                task.setDuration(duration);
+            }
+            case EPIC -> {
                 task = new Epic(title, description, status);
+                task.setStartTime(startTime);
+                task.setDuration(duration);
+            }
         }
         task.setId(id);
         return task;
@@ -250,27 +258,54 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return new ArrayList<>(getAllTasks.values());
     }
 
+    @Override
+    public List<Subtask> getSubtaskListFromEpic(int epicId) {
+        return super.getSubtaskListFromEpic(epicId);
+    }
+
+    @Override
+    public void updateEpicStatus(Epic epic) {
+        super.updateEpicStatus(epic);
+    }
+
     public static void main(String[] args) {
         FileBackedTasksManager manager = new FileBackedTasksManager();
-        Task task1 = new Task("Task1", "Description task1", TaskStatus.NEW);
+        Task task1 = new Task("Task1", "Description task1",
+                TaskStatus.NEW);
+        task1.setStartTime("01.01.22,00:00");
+        task1.setDuration(Duration.ofMinutes(1));
         manager.add(task1);
 
-        Task task2 = new Task("Task2", "Description task2", TaskStatus.NEW);
+        Task task2 = new Task("Task2", "Description task2",
+                TaskStatus.NEW);
+        task2.setStartTime("01.01.22,00:00");
+        task2.setDuration(Duration.ofMinutes(1));
         manager.add(task2);
 
-        Epic epic1 = new Epic("Epic1", "Description epic1", TaskStatus.NEW);
+        Epic epic1 = new Epic("Epic1", "Description epic1",
+                TaskStatus.NEW);
+        epic1.setStartTime("01.01.22,00:00");
+        epic1.setDuration(Duration.ofMinutes(1));
         manager.add(epic1);
 
-        Subtask Subtask1 = new Subtask("Subtask1", "Description Subtask1", TaskStatus.NEW, epic1.getId());
+
+        Subtask Subtask1 = new Subtask("Subtask1", "Description Subtask1",
+                TaskStatus.NEW, epic1.getId());
+        Subtask1.setStartTime("01.01.22,00:00");
+        Subtask1.setDuration(Duration.ofMinutes(1));
         manager.add(Subtask1);
 
         manager.getById(epic1.getId());
         manager.getById(task1.getId());
 
-        loadFromFile(Path.of("TaskManager.csv"));
 
-        Task task3 = new Task("Task3", "Description task3", TaskStatus.NEW);
+        Task task3 = new Task("Task3", "Description task3",
+                TaskStatus.NEW);
+        task3.setStartTime("01.01.22,00:00");
+        task3.setDuration(Duration.ofMinutes(1));
         manager.add(task3);
+
+        loadFromFile(Path.of("TaskManager.csv"));
     }
 }
 

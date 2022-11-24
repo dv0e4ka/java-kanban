@@ -1,9 +1,12 @@
-package manager;
+package main.manager;
 
-import manager.history.*;
-import manager.task.*;
+import main.manager.history.*;
+import main.manager.task.*;
 
 public class Managers {
+    public Managers() {
+    }
+
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
@@ -12,3 +15,4 @@ public class Managers {
         return new InMemoryTaskManager();
     }
 }
+

@@ -1,11 +1,8 @@
-package manager.task;
+package main.manager.task;
 
-import constructor.*;
-import manager.history.*;
+import main.constructor.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public interface TaskManager {
     List<Task> getHistory();
@@ -23,8 +20,6 @@ public interface TaskManager {
     Subtask getSubtaskById(int id);
 
     Epic getEpicById(int id);
-
-    List<Integer> getEpicIds();
 
     List<Task> getTaskValues();
 
@@ -51,4 +46,6 @@ public interface TaskManager {
     void update(Epic epic);
 
     public List<Task> getAllTasks();
+
+    public void updateEpicStatus(Epic epic);
 }

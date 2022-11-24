@@ -1,4 +1,4 @@
-package constructor;
+package main.constructor;
 
 public enum TaskStatus {
     NEW,
