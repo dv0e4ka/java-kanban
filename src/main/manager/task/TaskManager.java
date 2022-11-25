@@ -48,4 +48,6 @@ public interface TaskManager {
     public List<Task> getAllTasks();
 
     public void updateEpicStatus(Epic epic);
+
+    public void updateEpicTime(Epic epic);
 }

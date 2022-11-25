@@ -22,33 +22,28 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     protected Subtask getTimeSettingsForSubtask(Subtask subtask) {
-        subtask.setStartTime("01.01.22,00:00");
+        subtask.setStartTime("01.01.22/00:00");
         subtask.setDuration(Duration.ofMinutes(1));
         return subtask;
     }
 
     protected Task createTask() {
         Task task = new Task("Task1", "Description task1", TaskStatus.NEW);
-        task.setStartTime("01.01.22,00:00");
+        task.setStartTime("01.03.22/00:00");
         task.setDuration(Duration.ofMinutes(1));
         return task;
     }
 
     protected Epic createEpic() {
         Epic epic = new Epic("Epic1", "Description Epic1", TaskStatus.NEW);
-//        epic.setStartTime("01.03.22,00:00");
-//        epic.setDuration(Duration.ofMinutes(1));
         return epic;
     }
 
     protected Subtask createSubtask() {
         Epic epicForSubtask = new Epic("EpicForSubtask", "Description EpicForSubtask", TaskStatus.NEW);
-//        epicForSubtask.setStartTime("01.03.22,00:00");
-//        epicForSubtask.setDuration(Duration.ofMinutes(1));
         int epicId = manager.add(epicForSubtask);
-
         Subtask subtask = new Subtask("subtask", "Description subtask", TaskStatus.NEW, epicId);
-        subtask.setStartTime("01.02.22,00:00");
+        subtask.setStartTime("01.02.22/00:00");
         subtask.setDuration(Duration.ofMinutes(10));
         return subtask;
     }
@@ -235,7 +230,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         int taskId = manager.add(task);
 
         Task newTask = new Task("Task2", "Description task2", TaskStatus.NEW);
-        newTask.setStartTime("01.01.22,00:00");
+        newTask.setStartTime("01.01.22/00:00");
         newTask.setDuration(Duration.ofMinutes(1));
         newTask.setId(taskId);
 
@@ -252,7 +247,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         int epicId = oldSubtask.getEpicId();
 
         Subtask newSubtask = new Subtask("newSubtask", "Description newSubtask", TaskStatus.NEW, epicId);
-        newSubtask.setStartTime("01.01.22,00:00");
+        newSubtask.setStartTime("01.01.22/00:00");
         newSubtask.setDuration(Duration.ofMinutes(1));
         newSubtask.setId(oldSubtaskId);
 
@@ -270,7 +265,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         int id = manager.add(epic);
 
         Epic newEpic = new Epic("epic2", "Description epic2", TaskStatus.NEW);
-        newEpic.setStartTime("01.01.22,00:00");
+        newEpic.setStartTime("01.01.22/00:00");
         newEpic.setDuration(Duration.ofMinutes(1));
         newEpic.setId(id);
 
@@ -348,65 +343,64 @@ abstract class TaskManagerTest<T extends TaskManager> {
                 "статус с подзадачами со статусом IN_PROGRESS");
     }
 
-//TODO: дописать updateEpicTime
     @Test
     public void updateEpicTime() {
         Subtask subtask = createSubtask();
         int epicId = subtask.getEpicId();
         LocalDateTime subStartTime = subtask.getStartTime();
         LocalDateTime subEndTime = subtask.getEndTime();
-
         Duration duration = Duration.between(subStartTime, subEndTime);
 
-
         manager.add(subtask);
-        manager.getEpicById(epicId).updateTimeEpic(manager.getSubtaskListFromEpic(epicId));
+        manager.updateEpicStatus(manager.getEpicById(epicId));
 
         assertEquals(subStartTime, manager.getEpicById(epicId).getStartTime(),
                 "менеджер некорректно рассчитывает " +
-                "startTime для epic-a с 1 subtask-ом");
+                        "startTime для epic-a с 1 subtask-ом");
 
         assertEquals(subEndTime, manager.getEpicById(epicId).getEndTime(),
                 "менеджер некорректно рассчитывает " +
-                "endTime для epic-a с 1 subtask-ом");
+                        "endTime для epic-a с 1 subtask-ом");
 
         assertEquals(duration, manager.getEpicById(epicId).getDuration(),
                 "менеджер некорректно рассчитывает " +
-                "продолжительность epic-a с 1 subtask-ом");
+                        "продолжительность epic-a с 1 subtask-ом");
 
         Subtask subtask2 = new Subtask("Subtask2", "description sub2", TaskStatus.NEW, epicId);
-        subtask2.setStartTime("01.01.22,00:02");
+        subtask2.setStartTime("01.01.22/00:00");
         Duration sub2Duration = duration.plusMinutes(2);
         subtask2.setDuration(sub2Duration);
 
 
         manager.add(subtask2);
+        LocalDateTime localStartTime = LocalDateTime.of(2022,01,01,00,00);
 
-        assertEquals(subStartTime, manager.getEpicById(epicId).getStartTime(),
+        assertEquals(subtask2.getStartTime(), manager.getEpicById(epicId).getStartTime(),
                 "менеджер некорректно рассчитывает " +
-                "startTime для epic-a с 2 subtask-ами");
-        assertEquals(subtask2.getEndTime(), manager.getEpicById(epicId).getEndTime(),
+                        "startTime для epic-a с 2 subtask-ами");
+        assertEquals(subtask.getEndTime(), manager.getEpicById(epicId).getEndTime(),
                 "менеджер некорректно рассчитывает " +
-                "endTime для epic-a с 2 subtask-ами");
-        assertEquals(Duration.ofMinutes(4), manager.getEpicById(epicId).getDuration(),
-                "менеджер некорректно рассчитывает " +
-                "продолжительность epic-a с 2 subtask-ами");
+                        "endTime для epic-a с 2 subtask-ами");
 
+        Duration durationWith2subtasks = Duration.between(subtask2.getStartTime(), subtask.getEndTime());
+        assertEquals(durationWith2subtasks, manager.getEpicById(epicId).getDuration(),
+                "менеджер некорректно рассчитывает " +
+                        "продолжительность epic-a с 2 subtask-ами");
     }
 
-@Test
-public void subtaskShouldHaveInRealEpic() {
-    int randomId = (int) (Math.random() * 10);
-    final Subtask subtask = getTimeSettingsForSubtask(new Subtask("Subtask", "description", TaskStatus.NEW, randomId));
+    @Test
+    public void subtaskShouldHaveInRealEpic() {
+        int randomId = (int) (Math.random() * 10);
+        final Subtask subtask = getTimeSettingsForSubtask(new Subtask("Subtask", "description", TaskStatus.NEW, randomId));
 
-    NullPointerException exception = assertThrows(
-            NullPointerException.class,
-            () -> manager.add(subtask)
-    );
-    assertEquals("Cannot invoke \"main.constructor.Epic.addSubtask(int)\" because \"epic\" is null",
-            exception.getMessage(),
-            "некорректное создание subtask без существующего epic-a");
-}
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> manager.add(subtask)
+        );
+        assertEquals("Cannot invoke \"main.constructor.Epic.addSubtask(int)\" because \"epic\" is null",
+                exception.getMessage(),
+                "некорректное создание subtask без существующего epic-a");
+    }
 
     @Test
     public void deleteByIdAndAllTasks() {
@@ -440,12 +434,5 @@ public void subtaskShouldHaveInRealEpic() {
         assertNull(manager.getEpicById(epicId), "менеджер некорректно удаляет epic " +
                 "при удалении задач всех типов");
     }
-
-    @Test
-    public void getPrioritizedTasks() {
-
-    }
 }
-
-
 

@@ -1,5 +1,0 @@
-id,type,name,status,description,epic
-1,EPIC,EpicForSubtask,NEW,Description EpicForSubtask,start: 01.01.00,00:00,duration: 10min
-2,SUBTASK,subtask,NEW,Description subtask,1,start: 01.02.22,00:00,duration: 10min
-
-1,

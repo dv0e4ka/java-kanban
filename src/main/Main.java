@@ -22,8 +22,6 @@ public class Main {
         manager.add(Subtask1);
 
 
-        System.out.println(" реальное число завершения: " + manager.getEpicById(epicId).getStartTime());
-        System.out.println(" реальное число завершения: " + manager.getEpicById(epicId).getEndTime());
         System.out.println(manager.getEpicById(epicId));
     }
 }

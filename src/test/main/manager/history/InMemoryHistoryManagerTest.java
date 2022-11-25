@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class InMemoryHistoryManagerTest {
 
     InMemoryHistoryManager taskManager = new InMemoryHistoryManager();
-    //Epic epic = new Epic("", "", TaskStatus.NEW);
 
     @Test
     void shouldStatusNoSubtask(Epic epic) {
