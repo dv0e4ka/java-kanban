@@ -1,8 +1,6 @@
-package main.manager.task;
+package main.manager.taskManager;
 
 import main.constructor.*;
-import main.manager.Managers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
@@ -12,14 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 abstract class TaskManagerTest<T extends TaskManager> {
-    T manager;
-
-    protected abstract T createManager();
-
-    @BeforeEach
-    void setUp() {
-        manager = createManager();
-    }
+    protected T manager;
 
     protected Subtask getTimeSettingsForSubtask(Subtask subtask) {
         subtask.setStartTime("01.01.22/00:00");

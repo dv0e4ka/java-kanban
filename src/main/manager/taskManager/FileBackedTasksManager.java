@@ -1,8 +1,8 @@
-package main.manager.task;
+package main.manager.taskManager;
 
 import main.constructor.*;
-import main.manager.exceptions.ManagerSaveException;
-import main.manager.history.HistoryManager;
+import main.exceptions.ManagerSaveException;
+import main.manager.historyManager.HistoryManager;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,19 +12,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static main.constructor.TaskType.TASK;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    private Path path;
+    private static Path path;
     private static final String PATH = "resources/TaskManager.csv";
     private static final String HEAD = "id,type,name,status,description,epic";
 
 
     //конструктор
-    public FileBackedTasksManager(Path path) {
+    public FileBackedTasksManager(Path path) throws IOException {
         this.path = path;
     }
 
@@ -35,7 +34,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     //автосохранение
     private void save() {
         try{
-            path = Path.of(PATH);
+            if (!Files.exists(path)) {
+                Files.createDirectories(Paths.get("resources"));
+                path = Path.of(PATH);
+            }
             String head = HEAD + System.lineSeparator();
             StringBuilder data = new StringBuilder(head);
             List<Task> allTasks = this.getAllTasks();
@@ -75,50 +77,67 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         String description = parts[4];
         String startTime = parts[5];
         Duration duration = Duration.ofMinutes(Integer.parseInt(parts[6]));
-
-        Task task = null;
         switch (TaskType.valueOf(type)) {
             case TASK -> {
-                task = new Task(title, description, status);
+                Task task = new Task(title, description, status);
                 task.setStartTime(startTime);
                 task.setDuration(duration);
+                task.setId(id);
+                return task;
             }
             case SUBTASK -> {
                 int epicId = Integer.parseInt(parts[7]);
-                task = new Subtask(title, description, status, epicId);
-                task.setStartTime(startTime);
-                task.setDuration(duration);
+                Subtask subtask = new Subtask(title, description, status, epicId);
+                subtask.setStartTime(startTime);
+                subtask.setDuration(duration);
+                subtask.setId(id);
+                subtask.setTaskType(TaskType.SUBTASK);
+                return subtask;
             }
             case EPIC -> {
-                task = new Epic(title, description, status);
-                task.setStartTime(startTime);
-                task.setDuration(duration);
+                Epic epic = new Epic(title, description, status);
+                epic.setStartTime(startTime);
+                epic.setDuration(duration);
+                epic.setId(id);
+                epic.setTaskType(TaskType.EPIC);
+                return epic;
             }
         }
-        task.setId(id);
-        return task;
+        return null;
     }
 
     //загрузка Менеджера из файла
-    public static FileBackedTasksManager loadFromFile(Path file) throws ManagerSaveException {
-        if(!Files.exists(file)) {
+    public FileBackedTasksManager loadFromFile() throws ManagerSaveException, IOException {
+        if(!Files.exists(path)) {
             return new FileBackedTasksManager();
         }
         id = 0;
-        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(file);
+        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(path);
         Map<Integer, Task> allTasksMap = new HashMap<>();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(file.toFile(), StandardCharsets.UTF_8))) {
+        List<Subtask> subtasks = new ArrayList<>();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path.toFile(), StandardCharsets.UTF_8))) {
             while (bufferedReader.ready()) {
                 String line = bufferedReader.readLine();
                 if (line.equals(HEAD)) {
                     continue;
                 }
                 if (line.isBlank()) break;
-                Task task = fromString(line);
-                fileBackedTasksManager.add(task);
+                var task = fromString(line);
+                switch (task.getTaskType()) {
+                    case EPIC -> {
+                        Epic epic = (Epic) fromString(line);
+                        fileBackedTasksManager.add(epic);
+                    }
+                    case SUBTASK -> {
+                        Subtask subtask = (Subtask) fromString(line);
+                        fileBackedTasksManager.add(subtask);
+                    }
+                    case TASK -> {
+                        fileBackedTasksManager.add(task);
+                    }
+                }
                 int currId = task.getId();
                 if (id < currId) id = currId;
-                allTasksMap.put(task.getId(), task);
             }
             String lineWithHistory = bufferedReader.readLine();
             for (int id : historyFromString(lineWithHistory)) {
@@ -268,44 +287,32 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super.updateEpicStatus(epic);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         FileBackedTasksManager manager = new FileBackedTasksManager();
-        Task task1 = new Task("Task1", "Description task1",
-                TaskStatus.NEW);
-        task1.setStartTime("01.01.22,00:00");
-        task1.setDuration(Duration.ofMinutes(1));
-        manager.add(task1);
 
-        Task task2 = new Task("Task2", "Description task2",
-                TaskStatus.NEW);
-        task2.setStartTime("01.01.22,00:00");
-        task2.setDuration(Duration.ofMinutes(1));
-        manager.add(task2);
+        Epic epic1 = new Epic("Epic1", "Description epic1", TaskStatus.NEW);
+        Epic epic2 = new Epic("Epic2", "Description epic2", TaskStatus.NEW);
 
-        Epic epic1 = new Epic("Epic1", "Description epic1",
-                TaskStatus.NEW);
-        epic1.setStartTime("01.01.22,00:00");
-        epic1.setDuration(Duration.ofMinutes(1));
         manager.add(epic1);
+        manager.add(epic2);
 
-
-        Subtask Subtask1 = new Subtask("Subtask1", "Description Subtask1",
-                TaskStatus.NEW, epic1.getId());
-        Subtask1.setStartTime("01.01.22,00:00");
-        Subtask1.setDuration(Duration.ofMinutes(1));
-        manager.add(Subtask1);
+        Subtask subtask = new Subtask("Subtask1", "Description Subtask1", TaskStatus.NEW, epic1.getId());
+        subtask.setStartTime("01.01.22/00:00");
+        subtask.setDuration(Duration.ofMinutes(1));
+        manager.add(subtask);
 
         manager.getById(epic1.getId());
-        manager.getById(task1.getId());
 
+        FileBackedTasksManager newManager = new FileBackedTasksManager().loadFromFile();
+        System.out.println("размер getAllTasks - " + manager.getAllTasks.size());
+        System.out.println("размер getTasks - " + manager.getTasks.size());
+        System.out.println("размер getEpics - " + manager.getEpics.size());
+        System.out.println("размер getSubtasks - " + manager.getSubtasks.size() + "\r\n");
 
-        Task task3 = new Task("Task3", "Description task3",
-                TaskStatus.NEW);
-        task3.setStartTime("01.01.22,00:00");
-        task3.setDuration(Duration.ofMinutes(1));
-        manager.add(task3);
-
-        loadFromFile(Path.of("TaskManager.csv"));
+        System.out.println("newManager: размер getAllTasks - " + newManager.getAllTasks.size());
+        System.out.println("newManager: размер getTasks - " + newManager.getTasks.size());
+        System.out.println("newManager: размер getEpics - " + newManager.getEpics.size());
+        System.out.println("newManager: размер getSubtasks - " + newManager.getSubtasks.size());
     }
 }
 

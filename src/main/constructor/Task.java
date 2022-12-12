@@ -35,6 +35,14 @@ public class Task {
         setEndTime(startTime.plus(duration));
     }
 
+    public TaskType getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(TaskType taskType) {
+        this.taskType = taskType;
+    }
+
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -53,6 +61,7 @@ public class Task {
     public int getId() {
         return id;
     }
+
 
     public TaskStatus getStatus() {
         return status;
@@ -86,7 +95,7 @@ public class Task {
                 + "," + title
                 + "," + getStatus()
                 + "," + getDescription()
-                + "," + "start: " + getStartTime().format(formatter)
-                + "," + "duration: " + getDuration().toMinutes() + "min";
+                + "," + getStartTime().format(formatter)
+                + "," + getDuration().toMinutes();
     }
 }

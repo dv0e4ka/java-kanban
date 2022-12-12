@@ -1,7 +1,7 @@
 package main.manager;
 
-import main.manager.history.*;
-import main.manager.task.*;
+import main.manager.historyManager.*;
+import main.manager.taskManager.*;
 
 public class Managers {
     public Managers() {

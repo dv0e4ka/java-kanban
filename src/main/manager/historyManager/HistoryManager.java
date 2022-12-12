@@ -1,4 +1,4 @@
-package main.manager.history;
+package main.manager.historyManager;
 
 import main.constructor.Task;
 import java.util.List;

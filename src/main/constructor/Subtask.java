@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 public class Subtask extends Task {
     protected int epicId;
-    TaskType taskType = TaskType.SUBTASK;
 
     public Subtask(String title, String description, TaskStatus status, int epicId) {
         super(title, description, status);
@@ -32,8 +31,8 @@ public class Subtask extends Task {
                 + "," + title
                 + "," + getStatus()
                 + "," + description
-                + "," + getEpicId()
-                + "," + "start: " + getStartTime().format(formatter)
-                + "," + "duration: " + getDuration().toMinutes() + "min";
+                + "," + getStartTime().format(formatter)
+                + "," + getDuration().toMinutes()
+                + "," + getEpicId();
     }
 }

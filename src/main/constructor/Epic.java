@@ -7,8 +7,6 @@ import java.util.List;
 
 public class Epic extends Task {
     protected List<Integer> subtasks;
-    TaskType taskType = TaskType.EPIC;
-
 
     public Epic(String title, String description, TaskStatus status) {
         super(title, description, status);
@@ -53,7 +51,7 @@ public class Epic extends Task {
                 + "," + title
                 + "," + getStatus()
                 + "," + description
-                + "," + "start: " + getStartTime().format(formatter)
-                + "," + "duration: " + getDuration().toMinutes() + "min";
+                + "," + getStartTime().format(formatter)
+                + "," + getDuration().toMinutes();
     }
 }

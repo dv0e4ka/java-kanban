@@ -1,4 +1,4 @@
-package main.manager.task;
+package main.manager.taskManager;
 
 import main.constructor.*;
 

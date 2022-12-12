@@ -1,4 +1,4 @@
-package main.manager.task;
+package main.manager.taskManager;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -6,13 +6,13 @@ import java.util.*;
 
 import main.constructor.*;
 import main.manager.Managers;
-import main.manager.exceptions.ManagerSaveException;
-import main.manager.history.*;
+import main.exceptions.ManagerSaveException;
+import main.manager.historyManager.*;
 
 
 public class InMemoryTaskManager implements TaskManager {
 
-    protected static int id = 0;
+    protected int id = 0;
     protected final Map<Integer, Task> getAllTasks = new HashMap<>();
     protected final Map<Integer, Task> getTasks = new HashMap<>();
     protected final Map<Integer, Epic> getEpics = new HashMap<>();
@@ -46,6 +46,9 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    private void setIdTest(Task task) {
+
+    }
     @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
