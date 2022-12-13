@@ -73,7 +73,6 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
     @Test
     protected void saveAndLoadWithoutAnyTasks()  {
         manager.add(createTask());
-
         manager.deleteAllTasks();
         FileBackedTasksManager newManager = null;
         try {
@@ -83,37 +82,4 @@ class FileBackedTasksManagerTest extends TaskManagerTest<FileBackedTasksManager>
         assertEquals(0, newManager.getAllTasks.size(), "менеджер не корректно " +
                 "восстанавливает файл с пустыми задачами");
     }
-
-//    @Test
-//    protected void saveAndLoadWithoutHistory()  {
-//        Task task = new Task("task", "description", TaskStatus.NEW);
-//        task.setStartTime("01.01.22/00:00");
-//        task.setDuration(Duration.ofMinutes(1));
-//        int taskId = manager.add(task);
-//
-//        Epic epic = new Epic("task", "description", TaskStatus.NEW);
-//        int epicId = manager.add(epic);
-//
-//        Subtask subtask = new Subtask("task", "description", TaskStatus.NEW, epicId);
-//        getTimeSettingsForSubtask(subtask);
-//        int subtaskId = manager.add(subtask);
-//
-//        FileBackedTasksManager newManager = null;
-//        try {
-//            newManager = FileBackedTasksManager.loadFromFile();
-//
-//        } catch (ManagerSaveException | IOException e) {}
-//        assertEquals(3, newManager.getAllTasks.size(), "менеджер некорректно " +
-//                "восстанавливает файл с задачами");
-//
-//        System.out.println(manager.getAllTasks);
-//
-//        assertEquals(task, newManager.getTasks.get(taskId), "менеджер некорректно " +
-//                "восстанавливает task из файла");
-//        assertEquals(subtask, newManager.getSubtasks.get(subtaskId), "менеджер некорректно " +
-//                "восстанавливает subtask из файла");
-//        assertEquals(epic, newManager.getEpics.get(epicId), "менеджер некорректно " +
-//                "восстанавливает epic из файла");
-//        assertEquals(manager.getHistory(), newManager.getHistory());
-//    }
 }

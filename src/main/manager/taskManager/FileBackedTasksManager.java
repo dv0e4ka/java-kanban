@@ -107,7 +107,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     //загрузка Менеджера из файла
-    public FileBackedTasksManager loadFromFile() throws ManagerSaveException, IOException {
+    public FileBackedTasksManager loadFromFile() throws IOException {
         if(!Files.exists(path)) {
             return new FileBackedTasksManager();
         }
